@@ -1,9 +1,9 @@
-import PostCard from './components/shared/PostNote';
+import Home from './components/Home';
 
 function App() {
   return (
     <div className="App">
-      <PostCard/>
+      <Home/>
     </div>
   );
 }
