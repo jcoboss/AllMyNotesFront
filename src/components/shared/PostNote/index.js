@@ -14,7 +14,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    maxWidth: '65%',
+    maxWidth: '50%',
+    margin: 'auto'
   },
   avatar: {
     backgroundColor: deepPurple[500],
@@ -32,34 +33,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const data = {
-  theme: "Apuntes de cálculo",
-  authorName: "Josue Cobos",
-  noteBody: "This impressive paella is a perfect party dish and a fun meal to cook together with your guests. Add 1 cup of frozen peas along with the mussels, if you like.",
-  tagsArray: [
-    {
-      id: 0,
-      name: 'cálculo'
-    },
-    {
-      id: 2,
-      name: 'matemática'
-    },
-    {
-      id: 3,
-      name: 'note'
-    },
-    {
-      id: 4,
-      name: 'examen'
-    }
-  ],
-  liked: false
+  title: "Unknow title",
+  authorId: -1,
+  authorName: "Unknow author name",
+  content: "Empty note",
+  tags: [],
+  shared: []
 }
 
 function RecipeReviewCard(props) {
-  const { theme, authorName, noteBody, tagsArray} = props;
+  const { title, authorName, content, tags} = props;
   const classes = useStyles();
-  const [liked, setLiked] = React.useState(props.liked);
+  const [liked, setLiked] = React.useState(false);
+  
   const handleLikeClick = () => {
     setLiked(!liked);
   };
@@ -69,7 +55,9 @@ function RecipeReviewCard(props) {
       <CardHeader
         avatar={
           <Avatar aria-label="recipe" className={classes.avatar}>
-            {authorName.charAt(0)}
+            {
+              authorName.charAt(0)
+            }
           </Avatar>
         }
         action={
@@ -77,13 +65,13 @@ function RecipeReviewCard(props) {
             <MoreVertIcon />
           </IconButton>
         }
-        title={theme}
+        title={title}
         subheader={authorName}
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
           {
-            noteBody
+            content
           }
         </Typography>
       </CardContent>
@@ -91,10 +79,10 @@ function RecipeReviewCard(props) {
         {
           <ul className={classes.tagsList}>
             {
-              tagsArray?.map(t => (
-                <li key={toString(t.id)}>
+              tags?.map((t,i) => (
+                <li key={toString(i)}>
                   <Chip
-                    label={t.name}
+                    label={t}
                     className={classes.chip}
                   />
                 </li>
