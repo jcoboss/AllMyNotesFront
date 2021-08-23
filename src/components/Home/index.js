@@ -1,8 +1,10 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import PostNote from '../shared/PostNote';
+import CreateNote from './createNote';
+import { orderBy } from 'lodash'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -13,44 +15,45 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
     color: theme.palette.text.secondary,
   },
-  centered: {
-  
-  }
+  centered: {},
 }));
 
-const Home = () => {
+const Home = (props) => {
+  const { user } = props;
   const classes = useStyles();
   const [notes, setNotes] = React.useState([]);
 
-  console.log({notes});
-
-  useEffect(()=>{
+  useEffect(() => {
     fetch(`http://localhost:5000/note/`)
-    .then(response => response.json())
-    .then(data => setNotes(data.notes));
-  },[])
+      .then((response) => response.json())
+      .then((data) => setNotes(orderBy(data.notes, (n) => n.createdAt.seconds, 'desc')));
+  }, []);
 
   return (
     <div className={classes.root}>
-      <Grid container spacing={3} justifyContent="center"
-  alignItems="center">
+      <Grid container spacing={3} justifyContent="center" alignItems="center">
         <Grid item xs={12}>
-          <Typography variant="h3" component="h3" style={{textAlign: 'center'}}>
+          <Typography
+            variant="h3"
+            component="h3"
+            style={{ textAlign: 'center' }}
+          >
             All my notes
           </Typography>
         </Grid>
-        {
-          notes &&
+        <Grid item xs={12}>
+          <CreateNote user={user} setNotes={setNotes}/>
+        </Grid>
+        {notes &&
           !!notes.length &&
-          notes.map(n => (
-            <Grid item xs={12} >
-              <PostNote {...n}/>
+          notes.map((n) => (
+            <Grid key={`${Math.random()}`} item xs={12}>
+              <PostNote {...n} />
             </Grid>
-          ))
-        }
+          ))}
       </Grid>
     </div>
-  )
-}
-Home.defaultProps={user: 1};
+  );
+};
+Home.defaultProps = { user: { id: 1, admin: true, name: 'Enmanuel Magallanes' } };
 export default Home;

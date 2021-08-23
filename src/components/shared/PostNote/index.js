@@ -80,7 +80,7 @@ function RecipeReviewCard(props) {
           <ul className={classes.tagsList}>
             {
               tags?.map((t,i) => (
-                <li key={toString(i)}>
+                <li key={`${i}`}>
                   <Chip
                     label={t}
                     className={classes.chip}
