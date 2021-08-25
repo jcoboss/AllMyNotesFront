@@ -11,6 +11,8 @@ import Typography from '@material-ui/core/Typography';
 import { deepPurple } from '@material-ui/core/colors';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Menu from '@material-ui/core/Menu';
+import MenuItem from '@material-ui/core/MenuItem';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -42,13 +44,33 @@ const data = {
 }
 
 function RecipeReviewCard(props) {
-  const { title, authorName, content, tags} = props;
+
+  const { title, authorName, content, tags, setNoteToEdit, setNoteToDelete, note} = props;
+
   const classes = useStyles();
   const [liked, setLiked] = React.useState(false);
-  
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleLikeClick = () => {
     setLiked(!liked);
   };
+
+  const handleDelete = () => {
+    setNoteToDelete(note)
+    handleClose()
+  }
+  const handleEdit = () => {
+    setNoteToEdit(note)
+    handleClose()
+  }
 
   return (
     <Card className={classes.root}>
@@ -61,9 +83,25 @@ function RecipeReviewCard(props) {
           </Avatar>
         }
         action={
-          <IconButton aria-label="settings">
-            <MoreVertIcon />
-          </IconButton>
+          <>
+            <IconButton
+              aria-controls="simple-menu"
+              aria-haspopup="true"
+              onClick={handleClick}
+            >
+              <MoreVertIcon />
+            </IconButton>
+            <Menu
+              id="simple-menu"
+              anchorEl={anchorEl}
+              keepMounted
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleEdit}>Edit</MenuItem>
+              <MenuItem onClick={handleDelete}>Delete</MenuItem>
+            </Menu>
+          </>
         }
         title={title}
         subheader={authorName}
@@ -79,27 +117,27 @@ function RecipeReviewCard(props) {
         {
           <ul className={classes.tagsList}>
             {
-              tags?.map((t,i) => (
+              tags?.map((t, i) => (
                 <li key={`${i}`}>
                   <Chip
                     label={t}
                     className={classes.chip}
                   />
                 </li>
-                )
+              )
               )
             }
           </ul>
         }
-        <IconButton 
-          style={{marginLeft: 'auto'}}
+        <IconButton
+          style={{ marginLeft: 'auto' }}
           onClick={handleLikeClick}
           aria-label="add to favorites">
-          <FavoriteIcon color={liked ? 'primary': 'action'}/>
+          <FavoriteIcon color={liked ? 'primary' : 'action'} />
         </IconButton>
       </CardActions>
     </Card>
   );
 }
-RecipeReviewCard.defaultProps=data;
+RecipeReviewCard.defaultProps = data;
 export default RecipeReviewCard;
