@@ -23,7 +23,6 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 const animatedComponents = makeAnimated();
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     maxWidth: '50%',
@@ -52,13 +51,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) => {
+const CreateNote = ({
+  user,
+  noteToEdit,
+  setNotes,
+  updateNote,
+  setNoteToEdit,
+}) => {
   const classes = useStyles();
   const [title, setTitle] = React.useState('');
   const [content, setContent] = React.useState('');
   const [tag, setTag] = React.useState('');
   const [chipData, setChipData] = React.useState([]);
   const [users, setUsers] = React.useState([]);
+  //linkLabel
+  const [linkData, setLinkData] = React.useState([{}]);
+
   const [loading, setLoading] = React.useState();
 
   useEffect(() => {
@@ -77,16 +85,20 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
       },
       {
         id: 4,
-        label: 'Andres Vargas'
+        label: 'Andres Vargas',
       },
-    ]
+    ];
     if (noteToEdit) {
-      setTitle(noteToEdit.title)
-      setContent(noteToEdit.content)
-      setChipData(noteToEdit.tags.map(tag => { return { key: Math.random(), label: capitalize(tag) } }))
-      setUsers(allUsers.filter(user => noteToEdit.shared.includes(user.id)))
+      setTitle(noteToEdit.title);
+      setContent(noteToEdit.content);
+      setChipData(
+        noteToEdit.tags.map((tag) => {
+          return { key: Math.random(), label: capitalize(tag) };
+        })
+      );
+      setUsers(allUsers.filter((user) => noteToEdit.shared.includes(user.id)));
     }
-  }, [noteToEdit])
+  }, [noteToEdit]);
 
   const handleDelete = (chipToDelete) => () => {
     setChipData((chips) =>
@@ -96,16 +108,16 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
   const capitalize = (str) => {
     const lower = str.toLowerCase();
     return str.charAt(0).toUpperCase() + lower.slice(1);
-  }
+  };
 
   const clearData = () => {
-    setTitle('')
-    setContent('')
-    setTag('')
-    setChipData([])
-    setUsers([])
-    setNoteToEdit(undefined)
-  }
+    setTitle('');
+    setContent('');
+    setTag('');
+    setChipData([]);
+    setUsers([]);
+    setNoteToEdit(undefined);
+  };
 
   const handleUpdate = () => {
     let body = {
@@ -113,10 +125,10 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
       content,
       tags: chipData.map((chip) => chip.label),
       shared: users.map((user) => user.id),
-    }
-    updateNote(body)
-    clearData()
-  }
+    };
+    updateNote(body);
+    clearData();
+  };
 
   const createNote = () => {
     setLoading(true);
@@ -127,6 +139,7 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
       content,
       tags: chipData.map((chip) => chip.label),
       shared: users.map((user) => user.id),
+      links: linkData,
     };
     return fetch(`http://localhost:5000/note/`, {
       method: 'POST',
@@ -138,7 +151,7 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
       .then((response) => response.json())
       .then((response) => {
         if (response.code === 'Ok') {
-          setNotes(prev => [response.note, ...prev])
+          setNotes((prev) => [response.note, ...prev]);
         }
         console.log(response.note);
         setLoading(false);
@@ -197,6 +210,79 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
               error={false}
             />
           </Grid>
+          <Grid
+            container
+            item
+            xs={12}
+            direction="row"
+            alignItems="center"
+            justifyContent="flex-start"
+          >
+            <Grid
+              container
+              item
+              xs={12}
+              direction="row"
+              spacing={1}
+              alignItems="center"
+            >
+              {linkData.map((data, idx) => (
+                <React.Fragment key={`t-${idx}`}>
+                  <Grid item xs={4}>
+                    <TextField
+                      id="label"
+                      size="small"
+                      label="Link text"
+                      fullWidth
+                      value={data?.label}
+                      onChange={(event) => {
+                        linkData[idx].label = event.target.value;
+                        setLinkData([...linkData]);
+                      }}
+                      error={false}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid item xs={6}>
+                    <TextField
+                      id="url"
+                      size="small"
+                      fullWidth
+                      label="Link"
+                      value={data?.url}
+                      onChange={(event) => {
+                        linkData[idx].url = event.target.value;
+                        setLinkData([...linkData]);
+                      }}
+                      error={false}
+                      variant="outlined"
+                    />
+                  </Grid>
+                  <Grid container item xs={2} direction="row" spacing={2}>
+                    <Grid item xs={6}>
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setLinkData([...linkData, {}])}
+                      >
+                        <Icon>add</Icon>
+                      </Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                      <Button
+                        disabled={idx === 0}
+                        variant="contained"
+                        color="primary"
+                        onClick={() => setLinkData(linkData.filter((_, i) => i !== idx))}
+                      >
+                        <Icon>delete</Icon>
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </React.Fragment>
+              ))}
+            </Grid>
+          </Grid>
           <Grid item xs={12}>
             <Grid container direction="row" spacing={2} alignItems="center">
               <Grid item xs={3}>
@@ -221,7 +307,7 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
                         key: Math.random(),
                         label: capitalize(tag),
                       },
-                    ])
+                    ]);
                     setTag('');
                   }}
                 >
@@ -230,8 +316,7 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
               </Grid>
             </Grid>
           </Grid>
-          {
-            !!chipData?.length &&
+          {!!chipData?.length && (
             <Grid item xs={12}>
               <Paper component="ul" className={classes.tags} elevation={0}>
                 {chipData.map((data) => (
@@ -245,7 +330,7 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
                 ))}
               </Paper>
             </Grid>
-          }
+          )}
           <Grid item xs={12}>
             <Select
               isMulti
@@ -269,7 +354,7 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
                 },
                 {
                   id: 4,
-                  label: 'Andres Vargas'
+                  label: 'Andres Vargas',
                 },
               ]}
             />
@@ -277,8 +362,8 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
         </Grid>
       </CardContent>
       <CardActions disableSpacing>
-        {noteToEdit ?
-          < Grid
+        {noteToEdit ? (
+          <Grid
             container
             direction="row"
             justifyContent="flex-end"
@@ -308,7 +393,7 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
               </Button>
             </Grid>
           </Grid>
-          :
+        ) : (
           <Button
             variant="contained"
             color="primary"
@@ -318,8 +403,7 @@ const CreateNote = ({ user, noteToEdit, setNotes, updateNote, setNoteToEdit }) =
           >
             Send
           </Button>
-        }
-
+        )}
       </CardActions>
     </div>
   );
