@@ -97,6 +97,14 @@ const CreateNote = ({
         })
       );
       setUsers(allUsers.filter((user) => noteToEdit.shared.includes(user.id)));
+      if(noteToEdit.links){
+        setLinkData(noteToEdit.links.map( link => {
+          return {
+            url: link.url,
+            label: link.label
+          }
+        }))
+      }
     }
   }, [noteToEdit]);
 
@@ -117,6 +125,7 @@ const CreateNote = ({
     setChipData([]);
     setUsers([]);
     setNoteToEdit(undefined);
+    setLinkData([{}]);
   };
 
   const handleUpdate = () => {
@@ -125,6 +134,7 @@ const CreateNote = ({
       content,
       tags: chipData.map((chip) => chip.label),
       shared: users.map((user) => user.id),
+      links: linkData
     };
     updateNote(body);
     clearData();
