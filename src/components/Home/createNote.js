@@ -140,6 +140,7 @@ const CreateNote = ({
     clearData();
   };
 
+  // Just a comment to test sth
   const createNote = () => {
     setLoading(true);
     const payload = {
