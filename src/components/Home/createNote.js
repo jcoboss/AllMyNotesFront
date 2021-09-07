@@ -97,8 +97,8 @@ const CreateNote = ({
         })
       );
       setUsers(allUsers.filter((user) => noteToEdit.shared.includes(user.id)));
-      if(noteToEdit.links){
-        setLinkData(noteToEdit.links.map( link => {
+      if (noteToEdit.links) {
+        setLinkData(noteToEdit.links.map(link => {
           return {
             url: link.url,
             label: link.label
@@ -151,6 +151,7 @@ const CreateNote = ({
       tags: chipData.map((chip) => chip.label),
       shared: users.map((user) => user.id),
       links: linkData,
+      likes: []
     };
     return fetch(`http://localhost:5000/note/`, {
       method: 'POST',
