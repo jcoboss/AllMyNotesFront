@@ -352,19 +352,19 @@ const CreateNote = ({
               onChange={(event) => setUsers(event)}
               options={[
                 {
-                  id: 1,
+                  id: 2,
                   label: 'Enmanuel Magallanes',
                 },
                 {
-                  id: 2,
+                  id: 3,
                   label: 'Juan Pablo Escobar',
                 },
                 {
-                  id: 3,
+                  id: 4,
                   label: 'Josue Cobos',
                 },
                 {
-                  id: 4,
+                  id: 5,
                   label: 'Andres Vargas',
                 },
               ]}

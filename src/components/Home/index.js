@@ -30,13 +30,13 @@ const Home = (props) => {
     const url = new URL('http://localhost:5000/note');
     const search = new URLSearchParams({
       userId: user.id,
-      admin: false
+      admin: user.admin,
     });
     url.search = search.toString();
     fetch(url)
       .then((response) => response.json())
       .then((data) => setNotes(orderBy(data.notes, (n) => n.createdAt.seconds, 'desc')));
-  }, []);
+  }, [user.id, user.admin]);
 
   useEffect(() => {
     const deleteNote = async () => {
@@ -102,5 +102,4 @@ const Home = (props) => {
     </>
   );
 };
-Home.defaultProps = { user: { id: 1, admin: true, name: 'Enmanuel Magallanes' } };
 export default Home;

@@ -129,7 +129,7 @@ function RecipeReviewCard(props) {
               }
               {
                 links.map(l => (
-                  <a style={{marginRight:'10px'}}href={l.url} target="_blank">{l.label}</a>
+                  <a rel="noreferrer" style={{marginRight:'10px'}} href={l.url} target="_blank">{l.label}</a>
                   ))
               }
             </div> 
