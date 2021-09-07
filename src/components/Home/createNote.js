@@ -245,7 +245,7 @@ const CreateNote = ({
                       size="small"
                       label="Link text"
                       fullWidth
-                      value={data?.label}
+                      value={data.label || ''}
                       onChange={(event) => {
                         linkData[idx].label = event.target.value;
                         setLinkData([...linkData]);
@@ -260,7 +260,7 @@ const CreateNote = ({
                       size="small"
                       fullWidth
                       label="Link"
-                      value={data?.url}
+                      value={data.url || ''}
                       onChange={(event) => {
                         linkData[idx].url = event.target.value;
                         setLinkData([...linkData]);
