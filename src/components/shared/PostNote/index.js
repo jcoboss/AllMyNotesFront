@@ -46,12 +46,24 @@ const data = {
 function RecipeReviewCard(props) {
 
   const { title, authorName, content, tags,
-     setNoteToEdit, setNoteToDelete, note,
-     createdAt, links } = props;
-
+    setNoteToEdit, setNoteToDelete, note,
+    createdAt, links, user, likes, setNotes } = props;
   const classes = useStyles();
-  const [liked, setLiked] = React.useState(false);
+  const [liked, setLiked] = React.useState(likes ? likes.includes(user.id) : false);
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const updateNote = async (body) => {
+    let payload = {
+      method: "PUT",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    }
+    let response = await fetch(`http://localhost:5000/note/${note.noteId}`, payload)
+    response = await response.json()
+    setNotes(prevNotes => prevNotes.map(note => note.noteId === note.noteId ? response.updatedNote : note))
+  }
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -62,6 +74,15 @@ function RecipeReviewCard(props) {
   };
 
   const handleLikeClick = () => {
+    if (liked) {
+      updateNote({
+        likes: likes.filter(id => id !== user.id)
+      });
+    } else {
+      updateNote({
+        likes: [...likes, user.id]
+      });
+    }
     setLiked(!liked);
   };
 
@@ -109,7 +130,7 @@ function RecipeReviewCard(props) {
         subheader={
           <div>
             <div>{authorName}</div>
-            <div>{new Date(createdAt.seconds*1000).toLocaleString()}</div>
+            <div>{new Date(createdAt.seconds * 1000).toLocaleString()}</div>
           </div>
         }
       />
@@ -121,7 +142,7 @@ function RecipeReviewCard(props) {
         </Typography>
         <div>
           {
-            links && 
+            links &&
             !!links.length &&
             <div >
               {
@@ -132,7 +153,7 @@ function RecipeReviewCard(props) {
                   <a rel="noreferrer" style={{marginRight:'10px'}} href={l.url} target="_blank">{l.label}</a>
                   ))
               }
-            </div> 
+            </div>
           }
         </div>
       </CardContent>

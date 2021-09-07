@@ -93,8 +93,8 @@ const Home = (props) => {
           {notes &&
             !!notes.length &&
             notes.map((n) => (
-              <Grid key={`${Math.random()}`} item xs={12}>
-                <PostNote {...n} note={n} setNoteToEdit={setNoteToEdit} setNoteToDelete={setNoteToDelete} />
+              <Grid key={`${Math.random()}-${n.noteId}`} item xs={12}>
+                <PostNote {...n} user={user} note={n} setNoteToEdit={setNoteToEdit} setNoteToDelete={setNoteToDelete} setNotes={setNotes} />
               </Grid>
             ))}
         </Grid>
