@@ -13,6 +13,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import Menu from '@material-ui/core/Menu';
 import MenuItem from '@material-ui/core/MenuItem';
+import Badge from '@material-ui/core/Badge';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,7 +63,7 @@ function RecipeReviewCard(props) {
     }
     let response = await fetch(`http://localhost:5000/note/${note.noteId}`, payload)
     response = await response.json()
-    setNotes(prevNotes => prevNotes.map(note => note.noteId === note.noteId ? response.updatedNote : note))
+    setNotes(prevNotes => prevNotes.map(n => n.noteId === note.noteId ? response.updatedNote : n))
   }
 
   const handleClick = (event) => {
@@ -149,9 +150,9 @@ function RecipeReviewCard(props) {
                 'Enlaces: '
               }
               {
-                links.map(l => (
-                  <a rel="noreferrer" style={{marginRight:'10px'}} href={l.url} target="_blank">{l.label}</a>
-                  ))
+                links.map((l, i) => (
+                  <a key={`${i}`} rel="noreferrer" style={{ marginRight: '10px' }} href={l.url} target="_blank">{l.label}</a>
+                ))
               }
             </div>
           }
@@ -176,11 +177,14 @@ function RecipeReviewCard(props) {
         <IconButton
           style={{ marginLeft: 'auto' }}
           onClick={handleLikeClick}
-          aria-label="add to favorites">
-          <FavoriteIcon color={liked ? 'primary' : 'action'} />
+          aria-label="add to favorites"
+        >
+          <Badge badgeContent={likes.length} color={liked ? "primary" : "default"}>
+            <FavoriteIcon color={liked ? 'primary' : 'action'} />
+          </Badge>
         </IconButton>
       </CardActions>
-    </Card>
+    </Card >
   );
 }
 RecipeReviewCard.defaultProps = data;
