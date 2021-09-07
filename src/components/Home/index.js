@@ -27,7 +27,13 @@ const Home = (props) => {
   const [noteToDelete, setNoteToDelete] = React.useState(undefined)
 
   useEffect(() => {
-    fetch(`http://localhost:5000/note/`)
+    const url = new URL('http://localhost:5000/note');
+    const search = new URLSearchParams({
+      userId: user.id,
+      admin: false
+    });
+    url.search = search.toString();
+    fetch(url)
       .then((response) => response.json())
       .then((data) => setNotes(orderBy(data.notes, (n) => n.createdAt.seconds, 'desc')));
   }, []);
