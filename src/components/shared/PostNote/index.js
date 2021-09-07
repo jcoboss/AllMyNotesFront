@@ -45,7 +45,9 @@ const data = {
 
 function RecipeReviewCard(props) {
 
-  const { title, authorName, content, tags, setNoteToEdit, setNoteToDelete, note} = props;
+  const { title, authorName, content, tags,
+     setNoteToEdit, setNoteToDelete, note,
+     createdAt, links } = props;
 
   const classes = useStyles();
   const [liked, setLiked] = React.useState(false);
@@ -71,7 +73,7 @@ function RecipeReviewCard(props) {
     setNoteToEdit(note)
     handleClose()
   }
-
+  console.log(title, links);
   return (
     <Card className={classes.root}>
       <CardHeader
@@ -104,7 +106,12 @@ function RecipeReviewCard(props) {
           </>
         }
         title={title}
-        subheader={authorName}
+        subheader={
+          <div>
+            <div>{authorName}</div>
+            <div>{new Date(createdAt.seconds*1000).toLocaleString()}</div>
+          </div>
+        }
       />
       <CardContent>
         <Typography variant="body2" color="textSecondary" component="p">
@@ -112,6 +119,22 @@ function RecipeReviewCard(props) {
             content
           }
         </Typography>
+        <div>
+          {
+            links && 
+            !!links.length &&
+            <div >
+              {
+                'Enlaces: '
+              }
+              {
+                links.map(l => (
+                  <a style={{marginRight:'10px'}}href={l.url} target="_blank">{l.label}</a>
+                  ))
+              }
+            </div> 
+          }
+        </div>
       </CardContent>
       <CardActions disableSpacing>
         {
